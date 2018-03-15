@@ -86,8 +86,8 @@ public class MovieDetail implements HtmlBean {
 //		HttpRequest request = new HttpGetRequest("http://www.8vdy.com/view/index30032.html");
 //		request.setCharset("GBK");
 		 List<HttpRequest> sortRequests = new ArrayList<>();
-		int index = 30001;
-		for (int i = 30001; i < 30020; i++) {
+		int index = 30021;
+		for (int i = 30021; i < 39999; i++) {
 			String url = "http://www.8vdy.com/view/index" + i + ".html";
 			HttpRequest request = new HttpGetRequest(url);
 			request.setCharset("GBK");
@@ -100,7 +100,7 @@ public class MovieDetail implements HtmlBean {
 		//开启几个爬虫线程
 		.thread(1)
 		//单个爬虫每次抓取完一个请求后的间隔时间
-		.interval(2000)
+		.interval(3000)
 		.start();
 	}
 }
