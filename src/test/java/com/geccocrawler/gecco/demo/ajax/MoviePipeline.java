@@ -23,7 +23,7 @@ public class MoviePipeline implements Pipeline<MovieDetail> {
 //		List<Category> domestics = allSort.getDomestic();
 //		process(allSort, domestics);
 //		List<Category> bodys = allSort.getBaby();
-		process1(allSort);
+//		process1(allSort);
 	}
 	
 	 void process1(MovieDetail allSort) {

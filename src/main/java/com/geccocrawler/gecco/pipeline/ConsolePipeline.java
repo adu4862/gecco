@@ -3,6 +3,7 @@ package com.geccocrawler.gecco.pipeline;
 import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.annotation.PipelineName;
 import com.geccocrawler.gecco.spider.SpiderBean;
+import org.apache.http.util.TextUtils;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,7 +18,10 @@ public class ConsolePipeline implements Pipeline<SpiderBean> {
     public void process(SpiderBean bean) {
         System.out.println(JSON.toJSONString(bean));
         MovieDetail movieDetail = JSON.parseObject(JSON.toJSONString(bean), MovieDetail.class);
-        writeToDb(movieDetail);
+        if (!TextUtils.isEmpty(movieDetail.getDetail())) {
+
+            writeToDb(movieDetail);
+        }
 
     }
 
@@ -53,8 +57,8 @@ public class ConsolePipeline implements Pipeline<SpiderBean> {
 //				result = stmt.executeUpdate(sql);
             sql = "insert into tb_movie(code,detail,title) values('"+bean.getCode()+"','"+bean.getDetail()+"','"+bean.getTitle()+"')";
             int result = stmt.executeUpdate(sql);
-            sql = "select * from tb_movie";
-            ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
+//            sql = "select * from tb_movie";
+//            ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
 //            System.out.println("code\t地址\t标题");
 //            while (rs.next()) {
 //                System.out
