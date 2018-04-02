@@ -11,8 +11,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Gecco(matchUrl = "http://www.pniao.com/Mov/one/{code}.html", pipelines = {"consolePipeline1", "MoviePipeline"})
-public class MovieDetail implements HtmlBean {
+@Gecco(matchUrl = "http://www.pniao.com/Mdown/ajax_downUrls/{code}", pipelines = {"consolePipeline", "MoviePipeline"})
+public class MovieAjaxDetail implements HtmlBean {
 
     private static final long serialVersionUID = -377053120283382723L;
 
@@ -23,25 +23,25 @@ public class MovieDetail implements HtmlBean {
 //	private JDPrice price;
 
     @Text
-    @HtmlField(cssPath = "div.movTitle li.mainTitle")
+    @HtmlField(cssPath = "div.downUrlList.dUrlFlag a[title] ")
     private String title;
 
     @Text
     @HtmlField(cssPath = "")
     private String password;
-
+//
 //    @Ajax(url = "http://www.pniao.com/Mdown/ajax_downUrls/{code}")
 //    private String detail;
 //	private JDad jdAd;		oh6qmmpn7mh4v1vup1qq4eoje6
     //16270cad97d169
 //    @Href
     //class=  loadDownUrl  "eachUserDown sharerFlag2"class="mainBox downUrlDiv"
-//    @HtmlField(cssPath = "div.mainBox.downUrlDiv")
-//    private String detail;
+    @HtmlField(cssPath = "div.eachUserDown.sharerFlag2")
+    private String detail;
 
-//    @Image(download = "d:/gecco/jd/img")
-//    @HtmlField(cssPath = "#spec-n1 img")
-//    private String image;
+    @Image(download = "d:/gecco/jd/img")
+    @HtmlField(cssPath = "#spec-n1 img")
+    private String image;
 
 //	public JDPrice getPrice() {
 //		return price;
@@ -76,13 +76,13 @@ public class MovieDetail implements HtmlBean {
         this.password = password;
     }
 
-//    public String getDetail() {
-//        return detail;
-//    }
-//
-//    public void setDetail(String detail) {
-//        this.detail = detail;
-//    }
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
 
     public String getCode() {
         return code;
@@ -92,13 +92,13 @@ public class MovieDetail implements HtmlBean {
         this.code = code;
     }
 
-//    public String getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(String image) {
-//        this.image = image;
-//    }
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public static void main(String[] args) throws Exception {
 
@@ -115,12 +115,26 @@ public class MovieDetail implements HtmlBean {
      */
     private static void getMovieFromPniao() {
         List<HttpRequest> sortRequests = new ArrayList<>();
-        for (int i = 2; i < 59999; i++) {
-            String url = "http://www.pniao.com/Mov/one/" + i + ".html";
+        for (int i = 5778; i < 99999; i++) {
+            String url = "http://www.pniao.com/Mdown/ajax_downUrls/" + i + "";
 //			String url = "http://www.8vdy.com/view/index" + i + ".html";
             //http://www.zaixiantt.com/index.php/video/82275.html//下次64184-82217
+            //UM_distinctid=16270cad97d169-09cec1ea575459-b34356b-1fa400-16270cad97ec69;
+            // CNZZDATA1273184827=580527801-1522305984-null%7C1522305984;
+            // PHPSESSID=oh6qmmpn7mh4v1vup1qq4eoje6;
+            // Hm_lvt_a8bf1ff34b8beab2a6e10ae8a073e5ac=1522310765,1522632073,1522633080;
+            // USER_VIEWMODE=mobile;
+            // Hm_lpvt_a8bf1ff34b8beab2a6e10ae8a073e5ac=1522634584
             HttpRequest request = new HttpGetRequest(url);
             request.setCharset("GBK");
+            request.addCookie("UM_distinctid","16270cad97d169-09cec1ea575459-b34356b-1fa400-16270cad97ec69");
+            request.addCookie("PHPSESSID","oh6qmmpn7mh4v1vup1qq4eoje6");
+            request.addCookie("Hm_lvt_a8bf1ff34b8beab2a6e10ae8a073e5ac","1522310765,1522632073,1522633080");
+            request.addCookie("USER_VIEWMODE","mobile");
+            request.addCookie("Hm_lpvt_a8bf1ff34b8beab2a6e10ae8a073e5ac","1522634584");
+            request.addHeader("Referer","http://www.pniao.com/Mov/one/1.html");
+            request.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36");
+            request.addHeader("X-Requested-With","XMLHttpRequest");
             sortRequests.add(request);
         }
         GeccoEngine.create()
@@ -128,9 +142,9 @@ public class MovieDetail implements HtmlBean {
                 //开始抓取的页面地址
                 .start(sortRequests)
                 //开启几个爬虫线程
-                .thread(50)
+                .thread(30)
                 //单个爬虫每次抓取完一个请求后的间隔时间
-                .interval(4000)
+                .interval(3000)
                 .start();
     }
 

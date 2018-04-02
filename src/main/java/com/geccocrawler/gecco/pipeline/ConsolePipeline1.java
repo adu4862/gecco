@@ -5,25 +5,24 @@ import com.geccocrawler.gecco.annotation.PipelineName;
 import com.geccocrawler.gecco.spider.SpiderBean;
 import org.apache.http.util.TextUtils;
 
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 
-@PipelineName("consolePipeline")
-public class ConsolePipeline implements Pipeline<SpiderBean> {
+@PipelineName("consolePipeline1")
+public class ConsolePipeline1 implements Pipeline<SpiderBean> {
 
     @Override
     public void process(SpiderBean bean) {
         System.out.println(JSON.toJSONString(bean));
         MovieDetail movieDetail = JSON.parseObject(JSON.toJSONString(bean), MovieDetail.class);
-        String detail = movieDetail.getDetail();
-        String s1 = "onclick=\"javascript:dUrlAct(this,'clickDurl','"+movieDetail.getCode()+"');\"";
-        String s = detail.replace(s1, "");
-        s = s.replace("<a target=\"_blank\" href=\"http://www.pniao.com/About/downHelp\">图文教程?</a>", "");
-        movieDetail.setDetail(s);
-        if (!TextUtils.isEmpty(movieDetail.getDetail())) {
+//        String detail = movieDetail.getDetail();
+//        String s1 = "onclick=\"javascript:dUrlAct(this,'clickDurl','"+movieDetail.getCode()+"');\"";
+//        String s = detail.replace(s1, "");
+//        s = s.replace("<a target=\"_blank\" href=\"http://www.pniao.com/About/downHelp\">图文教程?</a>", "");
+//        movieDetail.setDetail(s);
+        if (!TextUtils.isEmpty(movieDetail.getTitle())) {
 
             writeToDb(movieDetail);
         }
@@ -60,7 +59,7 @@ public class ConsolePipeline implements Pipeline<SpiderBean> {
 //				System.out.println("创建数据表成功");
 //				sql = "insert into student(NO,name) values('2012001','陶伟基')";
 //				result = stmt.executeUpdate(sql);
-            sql = "insert into tb_movie_detail(code,detail) values('"+bean.getCode()+"','"+bean.getDetail()+"')";
+            sql = "insert into tb_movie2(code,title) values('"+bean.getCode()+"','"+bean.getTitle()+"')";
             int result = stmt.executeUpdate(sql);
 //            sql = "select * from tb_movie";
 //            ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
