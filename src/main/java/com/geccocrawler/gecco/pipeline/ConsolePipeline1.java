@@ -3,6 +3,13 @@ package com.geccocrawler.gecco.pipeline;
 import com.alibaba.fastjson.JSON;
 import com.geccocrawler.gecco.annotation.PipelineName;
 import com.geccocrawler.gecco.spider.SpiderBean;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.storage.BucketManager;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.storage.model.FetchRet;
+import com.qiniu.util.Auth;
 import org.apache.http.util.TextUtils;
 
 import java.sql.Connection;
@@ -13,20 +20,63 @@ import java.sql.Statement;
 @PipelineName("consolePipeline1")
 public class ConsolePipeline1 implements Pipeline<SpiderBean> {
 
+    public static final String ACCESS_KEY = "YrFo8wwXHr1G2T150slBn5pHd-adC7o91UZHlgYU"; // 你的access_key
+    public static final String SECRET_KEY = "fiUUq52QQRMBwTJkZfUb1KYcF6d6FFTrHOn78_Pr"; // 你的secret_key
+    public static final String BUCKET_NAME = "solo"; // 你的secret_key
+
     @Override
     public void process(SpiderBean bean) {
         System.out.println(JSON.toJSONString(bean));
         MovieDetail movieDetail = JSON.parseObject(JSON.toJSONString(bean), MovieDetail.class);
-//        String detail = movieDetail.getDetail();
-//        String s1 = "onclick=\"javascript:dUrlAct(this,'clickDurl','"+movieDetail.getCode()+"');\"";
-//        String s = detail.replace(s1, "");
-//        s = s.replace("<a target=\"_blank\" href=\"http://www.pniao.com/About/downHelp\">图文教程?</a>", "");
-//        movieDetail.setDetail(s);
+        String detail = movieDetail.getDetail();
+        String s1 = "onclick=\"javascript:dUrlAct(this,'clickDurl','"+movieDetail.getCode()+"');\"";
+        String s = detail.replace(s1, "");
+        s = s.replace("<a target=\"_blank\" href=\"http://www.pniao.com/About/downHelp\">图文教程?</a>", "");
+        movieDetail.setDetail(s);
         if (!TextUtils.isEmpty(movieDetail.getTitle())) {
 
             writeToDb(movieDetail);
+            uploadImg(movieDetail);
         }
 
+    }
+
+    private void uploadImg(MovieDetail movieDetail) {
+        String from = movieDetail.getImg();
+
+        //获取到 Access Key 和 Secret Key 之后，您可以按照如下方式进行密钥配置
+        Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
+
+//获取空间管理器
+        Configuration cfg = new Configuration(Zone.zone1());
+//        configuration.
+        BucketManager bucketManager = new BucketManager(auth,cfg);
+        try {
+
+            // 要求url可公网正常访问BucketManager.fetch(url, bucketName, key);
+            // @param url 网络上一个资源文件的URL
+            // @param bucketName 空间名称
+            // @param key 空间内文件的key[唯一的]
+            FetchRet putret = bucketManager.fetch(from, BUCKET_NAME, movieDetail.getCode());
+
+            System.out.println(putret.key);
+            System.out.println("succeed upload image");
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+////        String from = "http://ubmcmm.baidustatic.com/media/v1/0f000Q4BuusCvrTW2gnMm0.png";
+////        from = "http://i2.sinaimg.cn/IT/cr/2014/0209/1645509745.jpg";
+//        String to = "solo:"+movieDetail.getCode()+".jpg";
+//        String encodeFrom = EncodeUtils.urlsafeEncode(from);
+//        String encodeTo = EncodeUtils.urlsafeEncode(to);
+//        System.out.println(encodeTo);
+//        String url = "http://iovip.qbox.me/fetch/" + encodeFrom + "/to/" + encodeTo;
+//        System.out.println(url);
+//        mac = new com.qiniu.api.auth.digest.Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
+//        Client client = new DigestAuthClient(mac);
+//        CallRet ret = client.call(url);
+//        System.out.println(ret.response);
+//        System.out.println(ret.statusCode);
     }
 
     private void writeToDb(MovieDetail bean) {
@@ -59,7 +109,7 @@ public class ConsolePipeline1 implements Pipeline<SpiderBean> {
 //				System.out.println("创建数据表成功");
 //				sql = "insert into student(NO,name) values('2012001','陶伟基')";
 //				result = stmt.executeUpdate(sql);
-            sql = "insert into tb_movie2(code,title) values('"+bean.getCode()+"','"+bean.getTitle()+"')";
+            sql = "insert into tb_movie2_copy(code,title,img) values('"+bean.getCode()+"','"+bean.getTitle()+"','"+bean.getImg()+"')";
             int result = stmt.executeUpdate(sql);
 //            sql = "select * from tb_movie";
 //            ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值

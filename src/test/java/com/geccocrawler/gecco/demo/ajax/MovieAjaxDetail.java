@@ -115,7 +115,7 @@ public class MovieAjaxDetail implements HtmlBean {
      */
     private static void getMovieFromPniao() {
         List<HttpRequest> sortRequests = new ArrayList<>();
-        for (int i = 5778; i < 99999; i++) {
+        for (int i = 319; i < 49999; i++) {
             String url = "http://www.pniao.com/Mdown/ajax_downUrls/" + i + "";
 //			String url = "http://www.8vdy.com/view/index" + i + ".html";
             //http://www.zaixiantt.com/index.php/video/82275.html//下次64184-82217
@@ -142,9 +142,9 @@ public class MovieAjaxDetail implements HtmlBean {
                 //开始抓取的页面地址
                 .start(sortRequests)
                 //开启几个爬虫线程
-                .thread(30)
+                .thread(40)
                 //单个爬虫每次抓取完一个请求后的间隔时间
-                .interval(3000)
+                .interval(4000)
                 .start();
     }
 

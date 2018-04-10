@@ -60,7 +60,7 @@ public class ConsolePipeline implements Pipeline<SpiderBean> {
 //				System.out.println("创建数据表成功");
 //				sql = "insert into student(NO,name) values('2012001','陶伟基')";
 //				result = stmt.executeUpdate(sql);
-            sql = "insert into tb_movie_detail(code,detail) values('"+bean.getCode()+"','"+bean.getDetail()+"')";
+            sql = "insert into tb_movie_detail2(code,detail) values('"+bean.getCode()+"','"+bean.getDetail()+"')";
             int result = stmt.executeUpdate(sql);
 //            sql = "select * from tb_movie";
 //            ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值

@@ -30,26 +30,25 @@ public class MovieDetail implements HtmlBean {
     @HtmlField(cssPath = "")
     private String password;
 
-//    @Ajax(url = "http://www.pniao.com/Mdown/ajax_downUrls/{code}")
-//    private String detail;
-//	private JDad jdAd;		oh6qmmpn7mh4v1vup1qq4eoje6
-    //16270cad97d169
-//    @Href
-    //class=  loadDownUrl  "eachUserDown sharerFlag2"class="mainBox downUrlDiv"
-//    @HtmlField(cssPath = "div.mainBox.downUrlDiv")
-//    private String detail;
+//<div class="thumbOuter">
+//			<div class="thumb">
+//				<a href="http://www.pniao.com/Mov/one/46438.html">
+//								<img alt="孤独的美食家 第七季" class="orginSrc" data-url="http://www.pniao.com/p/movsp/24/46438.jpg" src="http://www.pniao.com/p/movsp/24/46438.jpg">
+//								</a>
+//			</div>
+//		</div>
 
-//    @Image(download = "d:/gecco/jd/img")
-//    @HtmlField(cssPath = "#spec-n1 img")
-//    private String image;
+    @Text
+    @HtmlField(cssPath = "div.thumbOuter div.thumb a.href")
+    private String img;
 
-//	public JDPrice getPrice() {
-//		return price;
-//	}
-//
-//	public void setPrice(JDPrice price) {
-//		this.price = price;
-//	}
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
 
     public String getTitle() {
         return title;
@@ -58,14 +57,6 @@ public class MovieDetail implements HtmlBean {
     public void setTitle(String title) {
         this.title = title;
     }
-
-//	public JDad getJdAd() {
-//		return jdAd;
-//	}
-//
-//	public void setJdAd(JDad jdAd) {
-//		this.jdAd = jdAd;
-//	}
 
 
     public String getPassword() {
@@ -76,13 +67,6 @@ public class MovieDetail implements HtmlBean {
         this.password = password;
     }
 
-//    public String getDetail() {
-//        return detail;
-//    }
-//
-//    public void setDetail(String detail) {
-//        this.detail = detail;
-//    }
 
     public String getCode() {
         return code;
@@ -92,13 +76,6 @@ public class MovieDetail implements HtmlBean {
         this.code = code;
     }
 
-//    public String getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(String image) {
-//        this.image = image;
-//    }
 
     public static void main(String[] args) throws Exception {
 
@@ -115,7 +92,7 @@ public class MovieDetail implements HtmlBean {
      */
     private static void getMovieFromPniao() {
         List<HttpRequest> sortRequests = new ArrayList<>();
-        for (int i = 2; i < 59999; i++) {
+        for (int i = 46438; i < 46448; i++) {
             String url = "http://www.pniao.com/Mov/one/" + i + ".html";
 //			String url = "http://www.8vdy.com/view/index" + i + ".html";
             //http://www.zaixiantt.com/index.php/video/82275.html//下次64184-82217
@@ -128,7 +105,7 @@ public class MovieDetail implements HtmlBean {
                 //开始抓取的页面地址
                 .start(sortRequests)
                 //开启几个爬虫线程
-                .thread(50)
+                .thread(60)
                 //单个爬虫每次抓取完一个请求后的间隔时间
                 .interval(4000)
                 .start();
