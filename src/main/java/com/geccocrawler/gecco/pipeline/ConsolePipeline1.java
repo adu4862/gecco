@@ -16,6 +16,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @PipelineName("consolePipeline1")
 public class ConsolePipeline1 implements Pipeline<SpiderBean> {
@@ -28,21 +30,53 @@ public class ConsolePipeline1 implements Pipeline<SpiderBean> {
     public void process(SpiderBean bean) {
         System.out.println(JSON.toJSONString(bean));
         MovieDetail movieDetail = JSON.parseObject(JSON.toJSONString(bean), MovieDetail.class);
-        String detail = movieDetail.getDetail();
-        String s1 = "onclick=\"javascript:dUrlAct(this,'clickDurl','"+movieDetail.getCode()+"');\"";
-        String s = detail.replace(s1, "");
-        s = s.replace("<a target=\"_blank\" href=\"http://www.pniao.com/About/downHelp\">图文教程?</a>", "");
-        movieDetail.setDetail(s);
-        if (!TextUtils.isEmpty(movieDetail.getTitle())) {
+//        String detail = movieDetail.getDetail();
+//        String s1 = "onclick=\"javascript:dUrlAct(this,'clickDurl','"+movieDetail.getCode()+"');\"";
+//        String s = detail.replace(s1, "");
+//        s = s.replace("<a target=\"_blank\" href=\"http://www.pniao.com/About/downHelp\">图文教程?</a>", "");
+//        movieDetail.setDetail(s);
+
+        String movInfoOuter = movieDetail.getMovInfoOuter();
+        String descb = movieDetail.getDescb();
+        String title = movieDetail.getTitle();
+        title = getChinese(title);
+        descb = getChinese(descb);
+        descb.replace("'", "");
+        movieDetail.setDescb(descb);
+        movieDetail.setTitle(title.replace("'", ""));
+
+        movInfoOuter = movInfoOuter.replace("http://www.pniao.com/Mov/tag/director/", "");
+        movInfoOuter = movInfoOuter.replace("http://www.pniao.com/Mov/tag/actors/", "");
+        movInfoOuter = movInfoOuter.replace("http://www.pniao.com/Mov/tag/sorts/", "");
+        movInfoOuter = movInfoOuter.replace("http://www.pniao.com/Mov/tag/country/", "");
+        movInfoOuter = movInfoOuter.replace("http://www.pniao.com/Mov/tag/year/", "");
+        movInfoOuter = movInfoOuter.replace("'", "");
+//        http://www.pniao.com/Mov/one/26462.html
+        movInfoOuter = movInfoOuter.replace( "http://www.pniao.com/Mov/one/" + movieDetail.getCode() + ".html", "http://www.changs1992.cn/wechat/web?code="+ movieDetail.getCode());
+        movieDetail.setMovInfoOuter(movInfoOuter);
+
+        if (!TextUtils.isEmpty(title)) {
 
             writeToDb(movieDetail);
-            uploadImg(movieDetail);
+//            uploadImg(movieDetail);
         }
 
     }
 
+    public static String getChinese(String paramValue) {
+        String regex = "([\u4e00-\u9fa5]+)";
+        String str = "";
+        Matcher matcher = Pattern.compile(regex).matcher(paramValue);
+        while (matcher.find()) {
+            str+= matcher.group(0);
+        }
+        return str;
+    }
+
+
+
     private void uploadImg(MovieDetail movieDetail) {
-        String from = movieDetail.getImg();
+        String from = movieDetail.getImg1();
 
         //获取到 Access Key 和 Secret Key 之后，您可以按照如下方式进行密钥配置
         Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
@@ -64,19 +98,7 @@ public class ConsolePipeline1 implements Pipeline<SpiderBean> {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-////        String from = "http://ubmcmm.baidustatic.com/media/v1/0f000Q4BuusCvrTW2gnMm0.png";
-////        from = "http://i2.sinaimg.cn/IT/cr/2014/0209/1645509745.jpg";
-//        String to = "solo:"+movieDetail.getCode()+".jpg";
-//        String encodeFrom = EncodeUtils.urlsafeEncode(from);
-//        String encodeTo = EncodeUtils.urlsafeEncode(to);
-//        System.out.println(encodeTo);
-//        String url = "http://iovip.qbox.me/fetch/" + encodeFrom + "/to/" + encodeTo;
-//        System.out.println(url);
-//        mac = new com.qiniu.api.auth.digest.Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
-//        Client client = new DigestAuthClient(mac);
-//        CallRet ret = client.call(url);
-//        System.out.println(ret.response);
-//        System.out.println(ret.statusCode);
+
     }
 
     private void writeToDb(MovieDetail bean) {
@@ -87,7 +109,7 @@ public class ConsolePipeline1 implements Pipeline<SpiderBean> {
         // 执行数据库操作之前要在数据库管理系统上创建一个数据库，名字自己定，
         // 下面语句之前就要先创建javademo数据库
         String url = "jdbc:mysql://localhost:3306/Movie_db?"
-                + "user=root&password=root&useUnicode=true";
+                + "user=root&password=root&useUnicode=true&characterEncoding=UTF-8";
 
         try {
             // 之所以要使用下面这条语句，是因为要使用MySQL的驱动，所以我们要把它驱动起来，
@@ -109,8 +131,11 @@ public class ConsolePipeline1 implements Pipeline<SpiderBean> {
 //				System.out.println("创建数据表成功");
 //				sql = "insert into student(NO,name) values('2012001','陶伟基')";
 //				result = stmt.executeUpdate(sql);
-            sql = "insert into tb_movie2_copy(code,title,img) values('"+bean.getCode()+"','"+bean.getTitle()+"','"+bean.getImg()+"')";
+            sql = "insert into tb_movie2_copy(code,title, descb) values('"+bean.getCode()+"','"+bean.getTitle()+"','"+bean.getDescb()+"')";
+            int result1 = stmt.executeUpdate(sql);
+            sql = "insert into tb_movie_movinfoouter(code,movInfoOuter) values('"+bean.getCode()+"','"+bean.getMovInfoOuter()+"')";
             int result = stmt.executeUpdate(sql);
+
 //            sql = "select * from tb_movie";
 //            ResultSet rs = stmt.executeQuery(sql);// executeQuery会返回结果的集合，否则返回空值
 //            System.out.println("code\t地址\t标题");

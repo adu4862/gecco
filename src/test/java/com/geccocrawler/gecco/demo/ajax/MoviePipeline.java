@@ -26,26 +26,26 @@ public class MoviePipeline implements Pipeline<MovieDetail> {
 //		process1(allSort);
 	}
 	
-	 void process1(MovieDetail allSort) {
-		int index = 30001;
-		for (int i = 30001; i < 30020; i++) {
-			String url = "http://www.8vdy.com/view/index" + i + ".html";
-			HttpRequest request = new HttpGetRequest(url);
-			sortRequests.add(request);
-		}
-//		if(categorys == null) {
-//			return;
+//	 void process1(MovieDetail allSort) {
+//		int index = 30001;
+//		for (int i = 30001; i < 30020; i++) {
+//			String url = "http://www.8vdy.com/view/index" + i + ".html";
+//			HttpRequest request = new HttpGetRequest(url);
+//			sortRequests.add(request);
 //		}
-//		for(Category category : categorys) {
-//			List<HrefBean> hrefs = category.getCategorys();
-//			for(HrefBean href : hrefs) {
-//				String url = href.getUrl()+"&delivery=1&page=1&JL=4_10_0&go=0";
-//				HttpRequest currRequest = allSort.getRequest();
-//				//SchedulerContext.into(currRequest.subRequest(url));
-//				//将分类的商品列表地址暂存起来
-//				sortRequests.add(currRequest.subRequest(url));
-//			}
-//		}
-	}
+////		if(categorys == null) {
+////			return;
+////		}
+////		for(Category category : categorys) {
+////			List<HrefBean> hrefs = category.getCategorys();
+////			for(HrefBean href : hrefs) {
+////				String url = href.getUrl()+"&delivery=1&page=1&JL=4_10_0&go=0";
+////				HttpRequest currRequest = allSort.getRequest();
+////				//SchedulerContext.into(currRequest.subRequest(url));
+////				//将分类的商品列表地址暂存起来
+////				sortRequests.add(currRequest.subRequest(url));
+////			}
+////		}
+//	}
 
 }

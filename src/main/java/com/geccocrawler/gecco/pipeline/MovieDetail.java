@@ -4,14 +4,32 @@ public class MovieDetail {
     String code;
     String detail;
     String title;
-    String img;
+    String img1;
+     String descb;
 
-    public String getImg() {
-        return img;
+    private String movInfoOuter;
+
+    public String getMovInfoOuter() {
+        return movInfoOuter;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setMovInfoOuter(String movInfoOuter) {
+        this.movInfoOuter = movInfoOuter;
+    }
+    public String getImg1() {
+        return img1;
+    }
+
+    public void setImg1(String img1) {
+        this.img1 = img1;
+    }
+
+    public String getDescb() {
+        return descb;
+    }
+
+    public void setDescb(String descb) {
+        this.descb = descb;
     }
 
     public String getCode() {
